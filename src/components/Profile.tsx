@@ -1,5 +1,4 @@
-import { useEffect } from "react"; // make sure this is imported
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   User,
   Edit3,
@@ -10,6 +9,8 @@ import {
   Leaf,
   PlusCircle,
   Hash,
+  FlaskConical,
+  Ruler,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext";
 import Header from "./shared/Header";
@@ -25,6 +26,7 @@ interface Farm {
   gps: string;
   landSize: string;
   soilReport: File | null;
+  npkValue?: string;
 }
 
 export default function Profile({ user, onBack }: ProfileProps) {
@@ -32,32 +34,39 @@ export default function Profile({ user, onBack }: ProfileProps) {
   const [isEditing, setIsEditing] = useState(false);
 
   const [formData, setFormData] = useState({
-  name: user.name || (language === "en" ? "Ramesh Kumar" : "രമേശ് കുമാർ"),
-  age: "45",
-  village: language === "en" ? "Kumarakom" : "കുമാരകം",
-  district: language === "en" ? "Kottayam" : "കോട്ടയം",
-  landSize: language === "en" ? "2.5 acres" : "2.5 ഏക്കർ",
-  soilType: language === "en" ? "Clay soil" : "കളിമണ്ണ്",
-  crops: language === "en" ? "Rice, Pepper, Coconut" : "നെല്ല്, കുരുമുളക്, തെങ്ങ്",
-  irrigation: language === "en" ? "Well irrigation" : "കിണർ നനവ്",
-  phone: user.phone || "9876543210",
-  email: "ramesh@farmer.com",
-  kisanId: "",
-});
-
-// Update formData when language changes
-useEffect(() => {
-  setFormData(prev => ({
-    ...prev,
     name: user.name || (language === "en" ? "Ramesh Kumar" : "രമേശ് കുമാർ"),
+    age: "45",
     village: language === "en" ? "Kumarakom" : "കുമാരകം",
     district: language === "en" ? "Kottayam" : "കോട്ടയം",
     landSize: language === "en" ? "2.5 acres" : "2.5 ഏക്കർ",
     soilType: language === "en" ? "Clay soil" : "കളിമണ്ണ്",
-    crops: language === "en" ? "Rice, Pepper, Coconut" : "നെല്ല്, കുരുമുളക്, തെങ്ങ്",
+    crops:
+      language === "en" ? "Rice, Pepper, Coconut" : "നെല്ല്, കുരുമുളക്, തെങ്ങ്",
     irrigation: language === "en" ? "Well irrigation" : "കിണർ നനവ്",
-  }));
-}, [language, user.name]);
+    phone: user.phone || "9876543210",
+    email: "ramesh@farmer.com",
+    kisanId: "",
+    npkValue: "", // Added NPK field
+    improvementStatus: "", // Tracks improvement
+  });
+
+  // Update formData when language changes
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      name:
+        user.name || (language === "en" ? "Ramesh Kumar" : "രമേശ് കുമാർ"),
+      village: language === "en" ? "Kumarakom" : "കുമാരകം",
+      district: language === "en" ? "Kottayam" : "കോട്ടയം",
+      landSize: language === "en" ? "2.5 acres" : "2.5 ഏക്കർ",
+      soilType: language === "en" ? "Clay soil" : "കളിമണ്ണ്",
+      crops:
+        language === "en"
+          ? "Rice, Pepper, Coconut"
+          : "നെല്ല്, കുരുമുളക്, തെങ്ങ്",
+      irrigation: language === "en" ? "Well irrigation" : "കിണർ നനവ്",
+    }));
+  }, [language, user.name]);
 
   // Multiple farms
   const [farms, setFarms] = useState<Farm[]>([]);
@@ -66,6 +75,7 @@ useEffect(() => {
     gps: "",
     landSize: "",
     soilReport: null,
+    npkValue: "",
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -82,7 +92,7 @@ useEffect(() => {
   const addFarm = () => {
     if (!newFarm.name) return;
     setFarms([...farms, newFarm]);
-    setNewFarm({ name: "", gps: "", landSize: "", soilReport: null });
+    setNewFarm({ name: "", gps: "", landSize: "", soilReport: null, npkValue: "" });
   };
 
   const profileFields = [
@@ -100,6 +110,19 @@ useEffect(() => {
       key: "kisanId",
       label: language === "en" ? "Kisan ID" : "കിസാൻ ഐഡി",
       icon: Hash,
+    },
+    {
+      key: "npkValue",
+      label: language === "en" ? "NPK Test Value" : "എൻപികെ ടെസ്റ്റ് മൂല്യം",
+      icon: FlaskConical,
+    },
+    {
+      key: "improvementStatus",
+      label:
+        language === "en"
+          ? "Crop Improvement Status"
+          : "വിള മെച്ചപ്പെടുത്തൽ നില",
+      icon: Leaf,
     },
   ];
 
@@ -174,6 +197,22 @@ useEffect(() => {
               )}
             </div>
           ))}
+
+          {/* Lab Suggestion if no improvement */}
+          {formData.improvementStatus.toLowerCase() === "no" && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mt-2">
+              <p className="text-red-700 font-semibold">
+                {language === "en"
+                  ? "No improvement observed. We suggest visiting the lab for advanced testing."
+                  : "മെച്ചപ്പെടുത്തൽ കണ്ടില്ല. കൂടുതൽ പരിശോധനയ്ക്ക് ലാബ് സന്ദർശിക്കാൻ ശുപാർശ ചെയ്യുന്നു."}
+              </p>
+              <button className="mt-2 px-4 py-2 bg-blue-600 text-white rounded-lg">
+                {language === "en"
+                  ? "Book Online Appointment"
+                  : "ഓൺലൈൻ അപോയ്‌മെന്റ് ബുക്ക് ചെയ്യുക"}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Multi-farm section */}
@@ -186,7 +225,16 @@ useEffect(() => {
             <div key={i} className="bg-gray-50 p-3 rounded-lg mb-2">
               <p className="font-semibold">{farm.name}</p>
               <p className="text-sm">{farm.gps}</p>
-              <p className="text-sm">{farm.landSize} acres</p>
+              <p className="text-sm">
+                {farm.landSize} {language === "en" ? "acres" : "ഏക്കർ"}
+              </p>
+              {farm.npkValue && (
+                <p className="text-sm text-blue-700">
+                  {language === "en"
+                    ? `NPK Value: ${farm.npkValue}`
+                    : `എൻപികെ മൂല്യം: ${farm.npkValue}`}
+                </p>
+              )}
               {farm.soilReport && (
                 <p className="text-sm text-green-700">
                   {language === "en"
@@ -219,11 +267,22 @@ useEffect(() => {
                 type="text"
                 placeholder={
                   language === "en"
-                    ? "Land size (auto in acres)"
-                    : "ഭൂമി വലുപ്പം (ഏക്കറിൽ)"
+                    ? "Land area (auto-calculated in acres)"
+                    : "ഭൂമി വലുപ്പം (ഓട്ടോ-കാൽക്കുലേറ്റ് ചെയ്ത ഏക്കർ)"
                 }
                 value={newFarm.landSize}
                 onChange={(e) => handleFarmChange("landSize", e.target.value)}
+                className="w-full px-3 py-2 border rounded-lg"
+              />
+              <input
+                type="text"
+                placeholder={
+                  language === "en"
+                    ? "NPK Test Value"
+                    : "എൻപികെ ടെസ്റ്റ് മൂല്യം"
+                }
+                value={newFarm.npkValue}
+                onChange={(e) => handleFarmChange("npkValue", e.target.value)}
                 className="w-full px-3 py-2 border rounded-lg"
               />
               <div>
@@ -233,10 +292,7 @@ useEffect(() => {
                 <input
                   type="file"
                   onChange={(e) =>
-                    handleFarmChange(
-                      "soilReport",
-                      e.target.files?.[0] || null
-                    )
+                    handleFarmChange("soilReport", e.target.files?.[0] || null)
                   }
                   className="w-full px-3 py-2 border rounded-lg"
                 />
@@ -252,53 +308,6 @@ useEffect(() => {
               </button>
             </div>
           )}
-        </div>
-
-        {/* Farm Stats */}
-        <div className="bg-gradient-to-r from-green-500 to-orange-500 rounded-xl shadow-sm p-6 mt-6 text-white">
-          <h3 className="text-lg font-bold mb-4">
-            {language === "en" ? "Farm Statistics" : "കൃഷി സ്ഥിതിവിവരം"}
-          </h3>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold">2.5</div>
-              <div className="text-sm opacity-90">
-                {language === "en" ? "Acres of land" : "ഏക്കർ ഭൂമി"}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">3</div>
-              <div className="text-sm opacity-90">
-                {language === "en" ? "Main Crops" : "പ്രധാന വിളകൾ"}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">15</div>
-              <div className="text-sm opacity-90">
-                {language === "en"
-                  ? "Years of Experience"
-                  : "വർഷത്തെ അനുഭവം"}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold">85%</div>
-              <div className="text-sm opacity-90">
-                {language === "en" ? "Success Rate" : "വിജയ നിരക്ക്"}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Offline Status */}
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 mt-4">
-          <h3 className="font-semibold text-green-800 mb-2">
-            {language === "en" ? "Offline-First Profile" : "ഓഫ്‌ലൈൻ പ്രൊഫൈൽ"}
-          </h3>
-          <p className="text-sm text-green-700">
-            {language === "en"
-              ? "Changes saved locally. Will sync when online."
-              : "മാറ്റങ്ങൾ ലൊക്കലായി സേവ് ചെയ്തിരിക്കുന്നു. ഓൺലൈനായപ്പോൾ സിങ്ക് ചെയ്യും."}
-          </p>
         </div>
       </div>
     </div>
