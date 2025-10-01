@@ -1,5 +1,21 @@
 import React from 'react';
-import { User, MessageCircle, Activity, Bell, Megaphone, BookOpen, Book, Store, Users, Wifi, WifiOff } from 'lucide-react';
+import {
+  User,
+  MessageCircle,
+  Activity,
+  Bell,
+  Megaphone,
+  BookOpen,
+  Book,
+  Store,
+  Users,
+  Wifi,
+  WifiOff,
+  AlertTriangle,
+  BarChart,
+  FileText,
+  Droplet
+} from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import LanguageToggle from './shared/LanguageToggle';
 
@@ -9,8 +25,7 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ user, onNavigate }: DashboardProps) {
-   const { t, language } = useLanguage();
-
+  const { t, language } = useLanguage();
   const [isOnline] = React.useState(true); // Demo state
 
   const navigationCards = [
@@ -25,34 +40,32 @@ export default function Dashboard({ user, onNavigate }: DashboardProps) {
     { key: 'community', icon: Users, color: 'bg-pink-500', label: t('community') }
   ];
 
-
-const advisories = [
-  {
-    title: language === 'en' ? 'Weather Alert' : 'കാലാവസ്ഥ മുന്നറിയിപ്പ്',
-    content:
-      language === 'en'
-        ? 'Rain expected. Good time for sowing seeds!'
-        : 'മഴ പ്രതീക്ഷിക്കുന്നു. വിത്ത് വിതയ്ക്കാൻ ഉത്തമ സമയം!',
-    color: 'bg-blue-100',
-  },
-  {
-    title: language === 'en' ? 'Crop Care' : 'വിള പരിപാലനം',
-    content:
-      language === 'en'
-        ? 'Rice crop needs fertilizer application this week.'
-        : 'ഈ ആഴ്ച നെൽകൃഷിക്ക് വളം ഇടേണ്ടതാണ്.',
-    color: 'bg-green-100',
-  },
-  {
-    title: language === 'en' ? 'Market Price' : 'വിപണി വില',
-    content:
-      language === 'en'
-        ? 'Pepper prices are rising – good time to sell.'
-        : 'കുരുമുളക് വില ഉയരുന്നു – വിൽക്കാൻ നല്ല സമയം.',
-    color: 'bg-yellow-100',
-  },
-];
-
+  const advisories = [
+    {
+      title: language === 'en' ? 'Weather Alert' : 'കാലാവസ്ഥ മുന്നറിയിപ്പ്',
+      content:
+        language === 'en'
+          ? 'Rain expected. Good time for sowing seeds!'
+          : 'മഴ പ്രതീക്ഷിക്കുന്നു. വിത്ത് വിതയ്ക്കാൻ ഉത്തമ സമയം!',
+      color: 'bg-blue-100',
+    },
+    {
+      title: language === 'en' ? 'Crop Care' : 'വിള പരിപാലനം',
+      content:
+        language === 'en'
+          ? 'Rice crop needs fertilizer application this week.'
+          : 'ഈ ആഴ്ച നെൽകൃഷിക്ക് വളം ഇടേണ്ടതാണ്.',
+      color: 'bg-green-100',
+    },
+    {
+      title: language === 'en' ? 'Market Price' : 'വിപണി വില',
+      content:
+        language === 'en'
+          ? 'Pepper prices are rising – good time to sell.'
+          : 'കുരുമുളക് വില ഉയരുന്നു – വിൽക്കാൻ നല്ല സമയം.',
+      color: 'bg-yellow-100',
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-orange-50 to-yellow-50">
@@ -102,6 +115,52 @@ const advisories = [
           </div>
         </div>
 
+        {/* NEW: Crop Health Monitoring */}
+        <div className="bg-white rounded-xl shadow-sm p-4">
+          <h2 className="font-bold text-gray-800 flex items-center gap-2">
+            <BarChart className="w-5 h-5 text-green-600" /> Crop Health Status
+          </h2>
+          <p className="text-sm text-gray-600 mt-1">
+            Spectral index: NDVI = 0.72 (Healthy 🌿)
+          </p>
+          <div className="mt-3 h-32 bg-gradient-to-r from-green-300 via-yellow-200 to-red-300 rounded-lg flex items-center justify-center text-gray-700 text-sm">
+            [ Spectral Health Map Placeholder ]
+          </div>
+        </div>
+
+        {/* NEW: Soil Sensor Summary */}
+        <div className="bg-white rounded-xl shadow-sm p-4">
+          <h2 className="font-bold text-gray-800 flex items-center gap-2">
+            <Droplet className="w-5 h-5 text-blue-600" /> Soil & Sensor Data
+          </h2>
+          <ul className="text-sm text-gray-700 mt-2 space-y-1">
+            <li>Soil Moisture: 28% (Optimal)</li>
+            <li>Temperature: 26°C</li>
+            <li>Humidity: 65%</li>
+            <li>Leaf Wetness: Normal</li>
+          </ul>
+        </div>
+
+        {/* NEW: Predictions & Alerts */}
+        <div className="bg-white rounded-xl shadow-sm p-4">
+          <h2 className="font-bold text-gray-800 flex items-center gap-2">
+            <AlertTriangle className="w-5 h-5 text-red-600" /> Predictions & Alerts
+          </h2>
+          <p className="text-sm text-gray-700 mt-1">⚠️ Pest outbreak risk: Medium</p>
+          <p className="text-sm text-gray-700">🌾 Yield stress detected in Zone 2</p>
+          <p className="text-sm text-gray-700">✅ Recommended: Apply bio-pesticide spray this week</p>
+        </div>
+
+        {/* NEW: Generate Report */}
+        <div className="bg-white rounded-xl shadow-sm p-4 flex items-center justify-between">
+          <h2 className="font-bold text-gray-800 flex items-center gap-2">
+            <FileText className="w-5 h-5 text-purple-600" /> Reports
+          </h2>
+          <button className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+            Generate PDF
+          </button>
+        </div>
+
         {/* Navigation Grid */}
         <div className="grid grid-cols-2 gap-4">
           {navigationCards.map((card) => (
@@ -110,10 +169,14 @@ const advisories = [
               onClick={() => onNavigate(card.key)}
               className="bg-white rounded-xl shadow-sm p-6 hover:shadow-md transition-all transform hover:scale-105 active:scale-95"
             >
-              <div className={`${card.color} rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3`}>
+              <div
+                className={`${card.color} rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3`}
+              >
                 <card.icon className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-800 text-sm text-center">{card.label}</h3>
+              <h3 className="font-semibold text-gray-800 text-sm text-center">
+                {card.label}
+              </h3>
             </button>
           ))}
         </div>
